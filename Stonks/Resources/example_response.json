@@ -1,0 +1,84 @@
+{
+  "stocks": [
+    {
+      "id": "AAPL",
+      "ticker": "AAPL",
+      "name": "Apple Inc.",
+      "currentPrice": 182.63,
+      "previousClosePrice": 180.25,
+      "isFeatured": true
+    },
+    {
+      "id": "MSFT",
+      "ticker": "MSFT",
+      "name": "Microsoft Corporation",
+      "currentPrice": 338.46,
+      "previousClosePrice": 340.12,
+      "isFeatured": true
+    },
+    {
+      "id": "GOOGL",
+      "ticker": "GOOGL",
+      "name": "Alphabet Inc.",
+      "currentPrice": 134.99,
+      "previousClosePrice": 133.45,
+      "isFeatured": true
+    },
+    {
+      "id": "AMZN",
+      "ticker": "AMZN",
+      "name": "Amazon.com Inc.",
+      "currentPrice": 178.75,
+      "previousClosePrice": 177.23,
+      "isFeatured": true
+    },
+    {
+      "id": "META",
+      "ticker": "META",
+      "name": "Meta Platforms Inc.",
+      "currentPrice": 493.50,
+      "previousClosePrice": 485.16,
+      "isFeatured": false
+    },
+    {
+      "id": "TSLA",
+      "ticker": "TSLA",
+      "name": "Tesla Inc.",
+      "currentPrice": 239.25,
+      "previousClosePrice": 245.68,
+      "isFeatured": true
+    },
+    {
+      "id": "NVDA",
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "currentPrice": 950.02,
+      "previousClosePrice": 925.75,
+      "isFeatured": false
+    },
+    {
+      "id": "BRK.A",
+      "ticker": "BRK.A",
+      "name": "Berkshire Hathaway Inc.",
+      "currentPrice": 630450.00,
+      "previousClosePrice": 628950.00,
+      "isFeatured": false
+    },
+    {
+      "id": "JPM",
+      "ticker": "JPM",
+      "name": "JPMorgan Chase & Co.",
+      "currentPrice": 195.23,
+      "previousClosePrice": 194.58,
+      "isFeatured": false
+    },
+    {
+      "id": "V",
+      "ticker": "V",
+      "name": "Visa Inc.",
+      "currentPrice": 276.85,
+      "previousClosePrice": 275.62,
+      "isFeatured": false
+    }
+  ]
+}
