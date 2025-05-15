@@ -13,6 +13,7 @@ struct FavoritesTabView: View {
                 if viewModel.isLoading {
                     ProgressView()
                         .scaleEffect(1.5)
+                        .accessibilityLabel("Loading favorites")
                 } else {
                     VStack {
                         if viewModel.favorites.isEmpty {
@@ -21,6 +22,7 @@ struct FavoritesTabView: View {
                                     .font(.system(size: 70))
                                     .foregroundColor(.gray)
                                     .padding()
+                                    .accessibilityHidden(true)
                                 
                                 Text("No Favorite Stocks")
                                     .font(.title2)
@@ -34,6 +36,9 @@ struct FavoritesTabView: View {
                                     .padding(.horizontal)
                             }
                             .padding()
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel("No favorite stocks")
+                            .accessibilityHint("Add stocks to your favorites from the Stocks tab")
                         } else {
                             VStack(alignment: .leading, spacing: 16) {
                                 HStack {
@@ -54,8 +59,17 @@ struct FavoritesTabView: View {
                                         }
                                         .foregroundColor(ColorTheme.accent)
                                     }
+                                    .accessibilityLabel("Sort by price change")
+                                    .accessibilityValue(sortAscending ? "Ascending" : "Descending")
+                                    .accessibilityHint("Double tap to toggle sorting order")
                                 }
                                 .padding(.horizontal)
+                                
+                                Text("Showing \(viewModel.favorites.count) favorite stocks")
+                                    .font(.caption)
+                                    .foregroundColor(ColorTheme.secondaryLabel)
+                                    .padding(.horizontal)
+                                    .accessibilityLabel("Showing \(viewModel.favorites.count) favorite stocks")
                                 
                                 ScrollView {
                                     LazyVStack(spacing: 12) {
@@ -75,12 +89,19 @@ struct FavoritesTabView: View {
                                     .padding(.horizontal)
                                     .animation(.default, value: sortAscending)
                                 }
+                                .accessibilityAction(named: "Sort \(sortAscending ? "Descending" : "Ascending")") {
+                                    withAnimation {
+                                        sortAscending.toggle()
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
             .navigationTitle("Favorites")
+            // Support dynamic type
+            .dynamicTypeSize(.xSmall ... .xxxLarge)
         }
     }
 }

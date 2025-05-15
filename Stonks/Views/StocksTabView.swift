@@ -12,6 +12,7 @@ struct StocksTabView: View {
                 if viewModel.isLoading {
                     ProgressView()
                         .scaleEffect(1.5)
+                        .accessibilityLabel("Loading stocks")
                 } else if let errorMessage = viewModel.errorMessage {
                     VStack {
                         Text("Error")
@@ -33,6 +34,10 @@ struct StocksTabView: View {
                         .cornerRadius(8)
                     }
                     .padding()
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("Error loading stocks")
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityHint("Double tap to retry loading stocks")
                 } else {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 20) {
@@ -50,6 +55,7 @@ struct StocksTabView: View {
                                 .fontWeight(.bold)
                                 .foregroundColor(ColorTheme.label)
                                 .padding(.horizontal)
+                                .accessibilityAddTraits(.isHeader)
                             
                             LazyVStack(spacing: 12) {
                                 ForEach(viewModel.stocks) { stock in
@@ -68,9 +74,16 @@ struct StocksTabView: View {
                     .refreshable {
                         await viewModel.loadStocks()
                     }
+                    .accessibilityAction(named: "Refresh stocks") {
+                        Task {
+                            await viewModel.loadStocks()
+                        }
+                    }
                 }
             }
             .navigationTitle("Stonks")
+            // Support dynamic type
+            .dynamicTypeSize(.xSmall ... .xxxLarge)
             .task {
                 if viewModel.stocks.isEmpty {
                     await viewModel.loadStocks()

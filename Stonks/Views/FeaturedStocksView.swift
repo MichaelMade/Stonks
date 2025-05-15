@@ -12,6 +12,7 @@ struct FeaturedStocksView: View {
                 .fontWeight(.bold)
                 .foregroundColor(ColorTheme.label)
                 .padding(.horizontal)
+                .accessibilityAddTraits(.isHeader)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 16) {
@@ -27,6 +28,7 @@ struct FeaturedStocksView: View {
                 .padding(.horizontal)
                 .padding(.bottom, 8)
             }
+            .accessibilityLabel("Horizontal scrolling list of featured stocks")
         }
     }
 }
@@ -49,6 +51,7 @@ struct FeaturedStockCard: View {
                 Button(action: onFavoriteToggle) {
                     Image(systemName: isFavorite ? "star.fill" : "star")
                         .foregroundColor(isFavorite ? ColorTheme.favorite : .gray)
+                        .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
                 }
                 .buttonStyle(BorderlessButtonStyle())
             }
@@ -78,5 +81,11 @@ struct FeaturedStockCard: View {
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
         .animation(.easeInOut(duration: 0.2), value: isFavorite)
+        // Accessibility
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(stock.ticker), \(stock.name)")
+        .accessibilityValue("Price: $\(String(format: "%.2f", stock.currentPrice)), \(stock.priceChange >= 0 ? "Up" : "Down") \(String(format: "%.2f", abs(stock.priceChange)))")
+        // Dynamic Type support
+        .dynamicTypeSize(.xSmall ... .xxxLarge)
     }
 }

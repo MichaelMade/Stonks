@@ -38,6 +38,7 @@ struct StockCellView: View {
                 Image(systemName: isFavorite ? "star.fill" : "star")
                     .foregroundColor(isFavorite ? ColorTheme.favorite : .gray)
                     .font(.title2)
+                    .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
             }
             .buttonStyle(BorderlessButtonStyle())
             .padding(.leading, 8)
@@ -47,5 +48,11 @@ struct StockCellView: View {
         .background(ColorTheme.background)
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+        // Accessibility
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(stock.name), \(stock.ticker), Price: $\(String(format: "%.2f", stock.currentPrice))")
+        .accessibilityValue("\(stock.priceChange >= 0 ? "Up" : "Down") \(String(format: "%.2f", abs(stock.priceChange))), \(String(format: "%.2f", abs(stock.priceChangePercentage)))% \(stock.priceChange >= 0 ? "gain" : "loss"), \(isFavorite ? "favorited" : "not in favorites")")
+        // Support Dynamic Type
+        .dynamicTypeSize(.xSmall ... .xxxLarge)
     }
 }
