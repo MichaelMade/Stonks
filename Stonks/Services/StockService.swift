@@ -1,3 +1,10 @@
+//
+//  StockService.swift
+//  Stonks
+//
+//  Created by Michael Moore on 5/19/25.
+//
+
 import Foundation
 
 class StockService {

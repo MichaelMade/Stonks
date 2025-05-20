@@ -1,3 +1,10 @@
+//
+//  StockCellView.swift
+//  Stonks
+//
+//  Created by Michael Moore on 5/19/25.
+//
+
 import SwiftUI
 
 struct StockCellView: View {

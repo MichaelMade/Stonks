@@ -1,3 +1,10 @@
+//
+//  Stock.swift
+//  Stonks
+//
+//  Created by Michael Moore on 5/19/25.
+//
+
 import Foundation
 
 struct Stock: Identifiable, Codable, Equatable {
