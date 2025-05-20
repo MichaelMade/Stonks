@@ -17,34 +17,14 @@ struct StocksTabView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 if viewModel.isLoading {
-                    ProgressView()
-                        .scaleEffect(1.5)
+                    LoadingAnimationView()
                         .accessibilityLabel("Loading stocks")
                 } else if let errorMessage = viewModel.errorMessage {
-                    VStack {
-                        Text("Error")
-                            .font(.title)
-                            .foregroundColor(.red)
-                        
-                        Text(errorMessage)
-                            .multilineTextAlignment(.center)
-                            .padding()
-                        
-                        Button("Retry") {
-                            Task {
-                                await viewModel.loadStocks()
-                            }
+                    ErrorView(message: errorMessage) {
+                        Task {
+                            await viewModel.loadStocks()
                         }
-                        .padding()
-                        .background(ColorTheme.accent)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
                     }
-                    .padding()
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel("Error loading stocks")
-                    .accessibilityAddTraits(.isButton)
-                    .accessibilityHint("Double tap to retry loading stocks")
                 } else {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 20) {
@@ -65,13 +45,17 @@ struct StocksTabView: View {
                                 .accessibilityAddTraits(.isHeader)
                             
                             LazyVStack(spacing: 12) {
-                                ForEach(viewModel.stocks) { stock in
+                                ForEach(Array(viewModel.stocks.enumerated()), id: \.element.id) { index, stock in
                                     StockCellView(
                                         stock: stock,
                                         isFavorite: viewModel.isFavorite(stock: stock),
                                         onFavoriteToggle: { viewModel.toggleFavorite(for: stock) }
                                     )
-                                    .transition(.opacity)
+                                    .transition(.asymmetric(
+                                        insertion: .move(edge: .trailing).combined(with: .opacity),
+                                        removal: .move(edge: .leading).combined(with: .opacity)
+                                    ))
+                                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(Double(index) * 0.05), value: viewModel.stocks)
                                 }
                             }
                             .padding(.horizontal)
@@ -98,4 +82,8 @@ struct StocksTabView: View {
             }
         }
     }
+}
+
+#Preview {
+    StocksTabView(viewModel: StockViewModel())
 }

@@ -12,16 +12,19 @@ struct StockCellView: View {
     let isFavorite: Bool
     let onFavoriteToggle: () -> Void
     
+    @State private var isPressed = false
+    @State private var starScale: CGFloat = 1.0
+    @State private var priceChangeScale: CGFloat = 1.0
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text(stock.name)
-                    .font(.headline)
-                    .lineLimit(1)
-                    .foregroundColor(ColorTheme.label)
-                
                 Text(stock.ticker)
+                    .font(.headline)
+                    .foregroundColor(ColorTheme.label)
+                Text(stock.name)
                     .font(.subheadline)
+                    .lineLimit(1)
                     .foregroundColor(ColorTheme.secondaryLabel)
             }
             
@@ -39,22 +42,62 @@ struct StockCellView: View {
                         .font(.subheadline)
                 }
                 .foregroundColor(stock.priceChange >= 0 ? ColorTheme.positiveChange : ColorTheme.negativeChange)
+                .scaleEffect(priceChangeScale)
             }
             
-            Button(action: onFavoriteToggle) {
+            Button(action: {
+                let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                impactFeedback.impactOccurred()
+                
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
+                    starScale = 1.4
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+                        starScale = 1.0
+                    }
+                }
+                
+                onFavoriteToggle()
+            }) {
                 Image(systemName: isFavorite ? "star.fill" : "star")
                     .foregroundColor(isFavorite ? ColorTheme.favorite : .gray)
                     .font(.title2)
+                    .scaleEffect(starScale)
                     .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
             }
             .buttonStyle(BorderlessButtonStyle())
             .padding(.leading, 8)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 12)
         .padding(.horizontal, 16)
-        .background(ColorTheme.background)
-        .cornerRadius(10)
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(ColorTheme.background)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(ColorTheme.accent.opacity(0.1), lineWidth: 1)
+                )
+        )
+        .shadow(color: Color.black.opacity(isPressed ? 0.12 : 0.06), radius: isPressed ? 6 : 4, x: 0, y: isPressed ? 4 : 2)
+        .scaleEffect(isPressed ? 0.98 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isPressed)
+        .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                isPressed = pressing
+            }
+        }, perform: {})
+        .onAppear {
+            withAnimation(.easeInOut(duration: 0.6).delay(0.1)) {
+                priceChangeScale = 1.05
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                withAnimation(.easeInOut(duration: 0.6)) {
+                    priceChangeScale = 1.0
+                }
+            }
+        }
         // Accessibility
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(stock.name), \(stock.ticker), Price: $\(String(format: "%.2f", stock.currentPrice))")
@@ -62,4 +105,53 @@ struct StockCellView: View {
         // Support Dynamic Type
         .dynamicTypeSize(.xSmall ... .xxxLarge)
     }
+}
+
+#Preview {
+    let sampleStocks = [
+        Stock(
+            id: "1",
+            ticker: "AAPL",
+            name: "Apple Inc.",
+            currentPrice: 150.25,
+            previousClosePrice: 148.50,
+            isFeatured: false
+        ),
+        Stock(
+            id: "2",
+            ticker: "TSLA",
+            name: "Tesla, Inc.",
+            currentPrice: 245.80,
+            previousClosePrice: 250.15,
+            isFeatured: false
+        ),
+        Stock(
+            id: "3",
+            ticker: "GOOGL",
+            name: "Alphabet Inc.",
+            currentPrice: 2750.80,
+            previousClosePrice: 2732.10,
+            isFeatured: false
+        ),
+        Stock(
+            id: "4",
+            ticker: "MSFT",
+            name: "Microsoft Corporation",
+            currentPrice: 338.46,
+            previousClosePrice: 340.12,
+            isFeatured: false
+        )
+    ]
+    
+    VStack(spacing: 12) {
+        ForEach(sampleStocks) { stock in
+            StockCellView(
+                stock: stock,
+                isFavorite: stock.ticker == "AAPL",
+                onFavoriteToggle: {}
+            )
+        }
+    }
+    .padding()
+    .background(ColorTheme.background)
 }

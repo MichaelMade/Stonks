@@ -18,34 +18,16 @@ struct FavoritesTabView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 if viewModel.isLoading {
-                    ProgressView()
-                        .scaleEffect(1.5)
+                    LoadingAnimationView()
                         .accessibilityLabel("Loading favorites")
                 } else {
                     VStack {
                         if viewModel.favorites.isEmpty {
-                            VStack(spacing: 16) {
-                                Image(systemName: "star.slash")
-                                    .font(.system(size: 70))
-                                    .foregroundColor(.gray)
-                                    .padding()
-                                    .accessibilityHidden(true)
-                                
-                                Text("No Favorite Stocks")
-                                    .font(.title2)
-                                    .fontWeight(.medium)
-                                    .foregroundColor(ColorTheme.label)
-                                
-                                Text("Add stocks to your favorites from the Stocks tab.")
-                                    .font(.body)
-                                    .foregroundColor(ColorTheme.secondaryLabel)
-                                    .multilineTextAlignment(.center)
-                                    .padding(.horizontal)
-                            }
-                            .padding()
-                            .accessibilityElement(children: .combine)
-                            .accessibilityLabel("No favorite stocks")
-                            .accessibilityHint("Add stocks to your favorites from the Stocks tab")
+                            EmptyStateView(
+                                title: "No Favorite Stocks",
+                                message: "Add stocks to your favorites from the Stocks tab.",
+                                systemImage: "star.slash"
+                            )
                         } else {
                             VStack(alignment: .leading, spacing: 16) {
                                 HStack {
@@ -80,21 +62,24 @@ struct FavoritesTabView: View {
                                 
                                 ScrollView {
                                     LazyVStack(spacing: 12) {
-                                        ForEach(viewModel.sortFavorites(byPriceChangeAscending: sortAscending)) { stock in
+                                        ForEach(Array(viewModel.sortFavorites(byPriceChangeAscending: sortAscending).enumerated()), id: \.element.id) { index, stock in
                                             StockCellView(
                                                 stock: stock,
                                                 isFavorite: true,
                                                 onFavoriteToggle: { 
-                                                    withAnimation {
+                                                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                                                         viewModel.toggleFavorite(for: stock)
                                                     }
                                                 }
                                             )
-                                            .transition(.opacity)
+                                            .transition(.asymmetric(
+                                                insertion: .move(edge: .trailing).combined(with: .opacity),
+                                                removal: .move(edge: .leading).combined(with: .opacity)
+                                            ))
+                                            .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(Double(index) * 0.05), value: sortAscending)
                                         }
                                     }
                                     .padding(.horizontal)
-                                    .animation(.default, value: sortAscending)
                                 }
                                 .accessibilityAction(named: "Sort \(sortAscending ? "Descending" : "Ascending")") {
                                     withAnimation {
@@ -111,4 +96,8 @@ struct FavoritesTabView: View {
             .dynamicTypeSize(.xSmall ... .xxxLarge)
         }
     }
+}
+
+#Preview {
+    FavoritesTabView(viewModel: StockViewModel())
 }

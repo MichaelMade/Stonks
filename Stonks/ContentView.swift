@@ -9,24 +9,28 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var stockViewModel = StockViewModel()
+    @State private var selectedTab = 0
     
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             StocksTabView(viewModel: stockViewModel)
                 .tabItem {
                     Label("Stonks", systemImage: "chart.line.uptrend.xyaxis")
                 }
                 .accessibilityHint("View all stocks")
+                .tag(0)
             
             FavoritesTabView(viewModel: stockViewModel)
                 .tabItem {
                     Label("Favorites", systemImage: "star")
                 }
                 .accessibilityHint("View your favorite stocks")
+                .tag(1)
         }
         .accentColor(ColorTheme.accent)
-        .preferredColorScheme(.none) // Allows system to switch between light and dark mode
+        .preferredColorScheme(.none)
         .dynamicTypeSize(.xSmall ... .xxxLarge)
+        .animation(.easeInOut(duration: 0.3), value: selectedTab)
     }
 }
 
