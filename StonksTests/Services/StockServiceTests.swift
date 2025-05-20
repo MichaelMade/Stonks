@@ -59,8 +59,9 @@ struct StockServiceTests {
         mockService.errorToThrow = StockError.failedToLoadData
         
         // When & Then
-        await #expect(throws: StockError.failedToLoadData, "Service should throw the specified error", performing: try await mockService
-            .fetchStocks)
+        await #expect(throws: StockError.failedToLoadData, "Service should throw the specified error") {
+            try await mockService.fetchStocks()
+        }
     }
     
     @Test func mockStockServiceDelay() async throws {
