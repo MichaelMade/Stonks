@@ -9,9 +9,5 @@ import Testing
 @testable import Stonks
 
 struct StonksTests {
-    
-    @Test func appLaunchTest() {
-        // Simple test to verify the test target is working
-        #expect(true, "Test target should be functional")
-    }
+    // This file can be used for integration tests if needed
 }

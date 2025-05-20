@@ -56,29 +56,29 @@ class StockViewModel: ObservableObject {
             
             // Handle specific error types
             switch error {
-            case let stockError as StockError:
-                errorMessage = stockError.localizedDescription
-                
-                // Auto-retry for certain error types
-                if shouldRetry(for: stockError) && retryCount < maxRetries {
-                    retryCount += 1
-                    // Wait before retrying (exponential backoff)
-                    let delay = UInt64(pow(2.0, Double(retryCount)) * 1_000_000_000) // 2^retryCount seconds
-                    try? await Task.sleep(nanoseconds: delay)
-                    await loadStocksWithRetry()
-                }
-            default:
-                errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
+                case let stockError as StockError:
+                    errorMessage = stockError.localizedDescription
+                    
+                    // Auto-retry for certain error types
+                    if shouldRetry(for: stockError) && retryCount < maxRetries {
+                        retryCount += 1
+                        // Wait before retrying (exponential backoff)
+                        let delay = UInt64(pow(2.0, Double(retryCount)) * 1_000_000_000) // 2^retryCount seconds
+                        try? await Task.sleep(nanoseconds: delay)
+                        await loadStocksWithRetry()
+                    }
+                default:
+                    errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
             }
         }
     }
     
     private func shouldRetry(for error: StockError) -> Bool {
         switch error {
-        case .networkUnavailable, .failedToLoadData:
-            return true
-        case .invalidResponse, .decodingFailed, .fileNotFound:
-            return false
+            case .networkUnavailable, .failedToLoadData:
+                return true
+            case .invalidResponse, .decodingFailed, .fileNotFound:
+                return false
         }
     }
     

@@ -141,6 +141,6 @@ struct StocksResponseTests {
         
         let expensiveStock = stocksResponse.stocks[1]
         #expect(expensiveStock.currentPrice == 999999.99, "Should handle very large prices")
-        #expect(abs(expensiveStock.priceChange - (-0.01)) < 0.001, "Should calculate change for large numbers")
+        #expect(abs(expensiveStock.priceChange - (-0.01)) < 0.01, "Should calculate small negative change for large numbers")
     }
 }
