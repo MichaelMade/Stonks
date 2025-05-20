@@ -58,7 +58,7 @@ struct EmptyStateView: View {
             }
             
             if systemImage.contains("star") {
-                withAnimation(.linear(duration: 8.0).repeatForever(autoreverses: false)) {
+                withAnimation(.linear(duration: 8.0).repeatForever(autoreverses: true)) {
                     starRotation = 15
                 }
             }

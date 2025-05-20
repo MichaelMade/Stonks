@@ -29,7 +29,7 @@ struct FeaturedStocksView: View {
                             isFavorite: isFavorite(stock),
                             onFavoriteToggle: { onFavoriteToggle(stock) }
                         )
-                        .frame(width: 170, height: 130)
+                        .frame(width: 200, height: 130)
                         .transition(.asymmetric(
                             insertion: .move(edge: .trailing).combined(with: .opacity),
                             removal: .move(edge: .leading).combined(with: .opacity)

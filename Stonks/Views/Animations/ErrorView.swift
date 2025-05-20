@@ -12,7 +12,6 @@ struct ErrorView: View {
     let onRetry: () -> Void
     
     @State private var isAnimating = false
-    @State private var buttonScale: CGFloat = 1.0
     
     var body: some View {
         VStack(spacing: 24) {
@@ -42,18 +41,7 @@ struct ErrorView: View {
                     .padding(.horizontal)
             }
             
-            Button(action: {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                    buttonScale = 0.95
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                        buttonScale = 1.0
-                    }
-                    onRetry()
-                }
-            }) {
+            Button(action: onRetry) {
                 HStack(spacing: 8) {
                     Image(systemName: "arrow.clockwise")
                         .font(.headline)
@@ -75,7 +63,6 @@ struct ErrorView: View {
                 .cornerRadius(25)
                 .shadow(color: ColorTheme.accent.opacity(0.3), radius: 10, x: 0, y: 4)
             }
-            .scaleEffect(buttonScale)
             .buttonStyle(PlainButtonStyle())
         }
         .padding()

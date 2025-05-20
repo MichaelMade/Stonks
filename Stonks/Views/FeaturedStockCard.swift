@@ -13,7 +13,6 @@ struct FeaturedStockCard: View {
     let onFavoriteToggle: () -> Void
     
     @State private var isPressed = false
-    @State private var starScale: CGFloat = 1.0
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -28,22 +27,10 @@ struct FeaturedStockCard: View {
                 Button(action: {
                     let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                     impactFeedback.impactOccurred()
-                    
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                        starScale = 1.3
-                    }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                            starScale = 1.0
-                        }
-                    }
-                    
                     onFavoriteToggle()
                 }) {
                     Image(systemName: isFavorite ? "star.fill" : "star")
                         .foregroundColor(isFavorite ? ColorTheme.favorite : .gray)
-                        .scaleEffect(starScale)
                         .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
                 }
                 .buttonStyle(BorderlessButtonStyle())
@@ -85,11 +72,6 @@ struct FeaturedStockCard: View {
         .scaleEffect(isPressed ? 0.98 : 1.0)
         .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isFavorite)
-        .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                isPressed = pressing
-            }
-        }, perform: {})
         // Accessibility
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(stock.ticker), \(stock.name)")
