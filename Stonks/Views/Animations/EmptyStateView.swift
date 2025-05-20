@@ -9,8 +9,8 @@ import SwiftUI
 
 struct EmptyStateView: View {
     @State private var isAnimating = false
-    @State private var starScale: CGFloat = 1.0
-    @State private var starRotation: Double = 0
+    @State private var iconScale: CGFloat = 1.2
+    @State private var iconRotation: Double = 0
     
     let title: String
     let message: String
@@ -28,8 +28,8 @@ struct EmptyStateView: View {
                 Image(systemName: systemImage)
                     .font(.system(size: 50, weight: .light))
                     .foregroundColor(ColorTheme.accent.opacity(0.8))
-                    .scaleEffect(starScale)
-                    .rotationEffect(.degrees(starRotation))
+                    .scaleEffect(iconScale)
+                    .rotationEffect(.degrees(iconRotation))
             }
             
             VStack(spacing: 12) {
@@ -54,12 +54,12 @@ struct EmptyStateView: View {
             }
             
             withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
-                starScale = 1.1
+                iconScale = 1.1
             }
             
             if systemImage.contains("star") {
-                withAnimation(.linear(duration: 8.0).repeatForever(autoreverses: true)) {
-                    starRotation = 15
+                withAnimation(.linear(duration: 5.0).repeatForever(autoreverses: true)) {
+                    iconRotation = 15
                 }
             }
         }

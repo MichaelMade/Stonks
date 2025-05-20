@@ -29,7 +29,7 @@ struct ErrorView: View {
                     Circle()
                         .fill(ColorTheme.negativeChange.opacity(0.1))
                         .frame(width: 80, height: 80)
-                        .scaleEffect(isAnimating ? 1.1 : 1.0)
+                        .scaleEffect(isAnimating ? 1.2 : 1.0)
                         .animation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: isAnimating)
                     
                     Image(systemName: "exclamationmark.triangle")

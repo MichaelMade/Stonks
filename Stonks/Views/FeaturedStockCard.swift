@@ -11,9 +11,7 @@ struct FeaturedStockCard: View {
     let stock: Stock
     let isFavorite: Bool
     let onFavoriteToggle: () -> Void
-    
-    @State private var isPressed = false
-    
+        
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -68,10 +66,7 @@ struct FeaturedStockCard: View {
             )
         )
         .cornerRadius(12)
-        .shadow(color: Color.black.opacity(isPressed ? 0.15 : 0.08), radius: isPressed ? 8 : 6, x: 0, y: isPressed ? 6 : 3)
-        .scaleEffect(isPressed ? 0.98 : 1.0)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
-        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isFavorite)
+        .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
         // Accessibility
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(stock.ticker), \(stock.name)")
