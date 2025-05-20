@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var stockViewModel = StockViewModel()
+    @EnvironmentObject var stockViewModel: StockViewModel
     @State private var selectedTab = 0
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            StocksTabView(viewModel: stockViewModel)
+            StocksTabView()
                 .tabItem {
                     Label("Stonks", systemImage: "chart.line.uptrend.xyaxis")
                 }
                 .accessibilityHint("View all stocks")
                 .tag(0)
             
-            FavoritesTabView(viewModel: stockViewModel)
+            FavoritesTabView()
                 .tabItem {
                     Label("Favorites", systemImage: "star")
                 }
@@ -36,4 +36,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(StockViewModel())
 }

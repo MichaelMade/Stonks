@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FavoritesTabView: View {
-    @ObservedObject var viewModel: StockViewModel
+    @EnvironmentObject var viewModel: StockViewModel
     @State private var sortAscending = false
     
     var body: some View {
@@ -63,15 +63,7 @@ struct FavoritesTabView: View {
                                 ScrollView {
                                     LazyVStack(spacing: 12) {
                                         ForEach(Array(viewModel.sortFavorites(byPriceChangeAscending: sortAscending).enumerated()), id: \.element.id) { index, stock in
-                                            StockCellView(
-                                                stock: stock,
-                                                isFavorite: true,
-                                                onFavoriteToggle: { 
-                                                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                                        viewModel.toggleFavorite(for: stock)
-                                                    }
-                                                }
-                                            )
+                                            StockCellView(stock: stock)
                                             .transition(.asymmetric(
                                                 insertion: .move(edge: .trailing).combined(with: .opacity),
                                                 removal: .move(edge: .leading).combined(with: .opacity)
@@ -100,5 +92,6 @@ struct FavoritesTabView: View {
 }
 
 #Preview {
-    FavoritesTabView(viewModel: StockViewModel())
+    FavoritesTabView()
+        .environmentObject(StockViewModel())
 }

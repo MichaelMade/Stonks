@@ -9,8 +9,7 @@ import SwiftUI
 
 struct FeaturedStockCard: View {
     let stock: Stock
-    let isFavorite: Bool
-    let onFavoriteToggle: () -> Void
+    @EnvironmentObject var viewModel: StockViewModel
         
     var body: some View {
         VStack(alignment: .leading) {
@@ -25,11 +24,11 @@ struct FeaturedStockCard: View {
                 Button(action: {
                     let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                     impactFeedback.impactOccurred()
-                    onFavoriteToggle()
+                    viewModel.toggleFavorite(for: stock)
                 }) {
-                    Image(systemName: isFavorite ? "star.fill" : "star")
-                        .foregroundColor(isFavorite ? ColorTheme.favorite : .gray)
-                        .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
+                    Image(systemName: viewModel.isFavorite(stock: stock) ? "star.fill" : "star")
+                        .foregroundColor(viewModel.isFavorite(stock: stock) ? ColorTheme.favorite : .gray)
+                        .accessibilityLabel(viewModel.isFavorite(stock: stock) ? "Remove from favorites" : "Add to favorites")
                 }
                 .buttonStyle(BorderlessButtonStyle())
             }
@@ -95,20 +94,13 @@ struct FeaturedStockCard: View {
     )
     
     HStack(spacing: 16) {
-        FeaturedStockCard(
-            stock: sampleStock1,
-            isFavorite: false,
-            onFavoriteToggle: {}
-        )
-        .frame(width: 170, height: 130)
+        FeaturedStockCard(stock: sampleStock1)
+            .frame(width: 170, height: 130)
         
-        FeaturedStockCard(
-            stock: sampleStock2,
-            isFavorite: true,
-            onFavoriteToggle: {}
-        )
-        .frame(width: 170, height: 130)
+        FeaturedStockCard(stock: sampleStock2)
+            .frame(width: 170, height: 130)
     }
     .padding()
     .background(ColorTheme.background)
+    .environmentObject(StockViewModel())
 }

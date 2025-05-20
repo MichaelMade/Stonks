@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StocksTabView: View {
-    @ObservedObject var viewModel: StockViewModel
+    @EnvironmentObject var viewModel: StockViewModel
     
     var body: some View {
         NavigationView {
@@ -37,11 +37,7 @@ struct StocksTabView: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 20) {
                             if !viewModel.featuredStocks.isEmpty {
-                                FeaturedStocksView(
-                                    stocks: viewModel.featuredStocks,
-                                    isFavorite: { viewModel.isFavorite(stock: $0) },
-                                    onFavoriteToggle: { viewModel.toggleFavorite(for: $0) }
-                                )
+                                FeaturedStocksView(stocks: viewModel.featuredStocks)
                                 .transition(.opacity)
                             }
                             
@@ -54,11 +50,7 @@ struct StocksTabView: View {
                             
                             LazyVStack(spacing: 12) {
                                 ForEach(Array(viewModel.stocks.enumerated()), id: \.element.id) { index, stock in
-                                    StockCellView(
-                                        stock: stock,
-                                        isFavorite: viewModel.isFavorite(stock: stock),
-                                        onFavoriteToggle: { viewModel.toggleFavorite(for: stock) }
-                                    )
+                                    StockCellView(stock: stock)
                                     .transition(.asymmetric(
                                         insertion: .move(edge: .trailing).combined(with: .opacity),
                                         removal: .move(edge: .leading).combined(with: .opacity)
@@ -94,5 +86,6 @@ struct StocksTabView: View {
 }
 
 #Preview {
-    StocksTabView(viewModel: StockViewModel())
+    StocksTabView()
+        .environmentObject(StockViewModel())
 }

@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct StonksApp: App {
+    @StateObject private var stockViewModel = StockViewModel()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(stockViewModel)
         }
     }
 }

@@ -9,8 +9,7 @@ import SwiftUI
 
 struct StockCellView: View {
     let stock: Stock
-    let isFavorite: Bool
-    let onFavoriteToggle: () -> Void
+    @EnvironmentObject var viewModel: StockViewModel
     
     @State private var isPressed = false
     
@@ -45,12 +44,14 @@ struct StockCellView: View {
             Button(action: {
                 let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
                 impactFeedback.impactOccurred()
-                onFavoriteToggle()
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                    viewModel.toggleFavorite(for: stock)
+                }
             }) {
-                Image(systemName: isFavorite ? "star.fill" : "star")
-                    .foregroundColor(isFavorite ? ColorTheme.favorite : .gray)
+                Image(systemName: viewModel.isFavorite(stock: stock) ? "star.fill" : "star")
+                    .foregroundColor(viewModel.isFavorite(stock: stock) ? ColorTheme.favorite : .gray)
                     .font(.title2)
-                    .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
+                    .accessibilityLabel(viewModel.isFavorite(stock: stock) ? "Remove from favorites" : "Add to favorites")
             }
             .buttonStyle(BorderlessButtonStyle())
             .padding(.leading, 8)
@@ -71,7 +72,7 @@ struct StockCellView: View {
         // Accessibility
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(stock.name), \(stock.ticker), Price: $\(String(format: "%.2f", stock.currentPrice))")
-        .accessibilityValue("\(stock.priceChange >= 0 ? "Up" : "Down") \(String(format: "%.2f", abs(stock.priceChange))), \(String(format: "%.2f", abs(stock.priceChangePercentage)))% \(stock.priceChange >= 0 ? "gain" : "loss"), \(isFavorite ? "favorited" : "not in favorites")")
+        .accessibilityValue("\(stock.priceChange >= 0 ? "Up" : "Down") \(String(format: "%.2f", abs(stock.priceChange))), \(String(format: "%.2f", abs(stock.priceChangePercentage)))% \(stock.priceChange >= 0 ? "gain" : "loss"), \(viewModel.isFavorite(stock: stock) ? "favorited" : "not in favorites")")
         // Support Dynamic Type
         .dynamicTypeSize(.xSmall ... .xxxLarge)
     }
@@ -115,13 +116,10 @@ struct StockCellView: View {
     
     VStack(spacing: 12) {
         ForEach(sampleStocks) { stock in
-            StockCellView(
-                stock: stock,
-                isFavorite: stock.ticker == "AAPL",
-                onFavoriteToggle: {}
-            )
+            StockCellView(stock: stock)
         }
     }
     .padding()
     .background(ColorTheme.background)
+    .environmentObject(StockViewModel())
 }

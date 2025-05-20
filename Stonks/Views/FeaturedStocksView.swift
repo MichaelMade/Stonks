@@ -9,8 +9,6 @@ import SwiftUI
 
 struct FeaturedStocksView: View {
     let stocks: [Stock]
-    let isFavorite: (Stock) -> Bool
-    let onFavoriteToggle: (Stock) -> Void
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -24,11 +22,7 @@ struct FeaturedStocksView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 16) {
                     ForEach(Array(stocks.enumerated()), id: \.element.id) { index, stock in
-                        FeaturedStockCard(
-                            stock: stock,
-                            isFavorite: isFavorite(stock),
-                            onFavoriteToggle: { onFavoriteToggle(stock) }
-                        )
+                        FeaturedStockCard(stock: stock)
                         .frame(width: 200, height: 130)
                         .transition(.asymmetric(
                             insertion: .move(edge: .trailing).combined(with: .opacity),
@@ -52,10 +46,7 @@ struct FeaturedStocksView: View {
         Stock(id: "3", ticker: "MSFT", name: "Microsoft Corporation", currentPrice: 305.15, previousClosePrice: 307.20, isFeatured: true)
     ]
     
-    FeaturedStocksView(
-        stocks: sampleStocks,
-        isFavorite: { _ in Bool.random() },
-        onFavoriteToggle: { _ in }
-    )
-    .background(ColorTheme.background)
+    FeaturedStocksView(stocks: sampleStocks)
+        .background(ColorTheme.background)
+        .environmentObject(StockViewModel())
 }
