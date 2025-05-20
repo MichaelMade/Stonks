@@ -7,12 +7,18 @@
 
 import Foundation
 
-class StockService {
-    enum StockError: Error {
-        case failedToLoadData
-        case invalidResponse
-    }
-    
+// Protocol for dependency injection and mocking in tests
+protocol StockServiceProtocol {
+    func fetchStocks() async throws -> [Stock]
+}
+
+// Errors that can occur when fetching stocks
+enum StockError: Error {
+    case failedToLoadData
+    case invalidResponse
+}
+
+class StockService: StockServiceProtocol {
     func fetchStocks() async throws -> [Stock] {
         // Simulate network delay
         try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay

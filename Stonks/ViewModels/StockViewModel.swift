@@ -15,7 +15,8 @@ class StockViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
-    private let stockService = StockService()
+    private let stockService: StockServiceProtocol
+    private let userDefaults: UserDefaults
     private let favoritesKey = "favoriteStocks"
     
     var featuredStocks: [Stock] {
@@ -26,7 +27,9 @@ class StockViewModel: ObservableObject {
         stocks.filter { favoriteStocks.contains($0.id) }
     }
     
-    init() {
+    init(stockService: StockServiceProtocol = StockService(), userDefaults: UserDefaults = .standard) {
+        self.stockService = stockService
+        self.userDefaults = userDefaults
         loadFavorites()
     }
     
@@ -61,11 +64,11 @@ class StockViewModel: ObservableObject {
     // MARK: - Persistence
     
     private func saveFavorites() {
-        UserDefaults.standard.set(favoriteStocks, forKey: favoritesKey)
+        userDefaults.set(favoriteStocks, forKey: favoritesKey)
     }
     
     private func loadFavorites() {
-        favoriteStocks = UserDefaults.standard.stringArray(forKey: favoritesKey) ?? []
+        favoriteStocks = userDefaults.stringArray(forKey: favoritesKey) ?? []
     }
     
     // MARK: - Sorting
