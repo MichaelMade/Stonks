@@ -21,13 +21,20 @@ struct StonksTests {
         
         // Services
         try await StockServiceTests().fetchStocksSuccess()
+        try await StockServiceTests().mockStockServiceBasics()
+        try await StockServiceTests().mockStockServiceError()
+        try await StockServiceTests().mockStockServiceDelay()
         
         // ViewModels
+        try await StockViewModelTests().loadEmptyStockList()
         try await StockViewModelTests().loadStocksSuccess()
         try await StockViewModelTests().loadStocksFailure()
         try await StockViewModelTests().featuredStocks()
         try await StockViewModelTests().favoritesManagement()
         try await StockViewModelTests().sortFavorites()
         try await StockViewModelTests().persistenceAndReload()
+        try await StockViewModelTests().favoritesWithInvalidStockIDs()
+        try await StockViewModelTests().emptyFeaturedStocks()
+        try await StockViewModelTests().testWithMixedStocksAndFavorites()
     }
 }

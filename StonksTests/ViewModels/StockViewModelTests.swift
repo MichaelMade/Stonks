@@ -11,6 +11,26 @@ import Testing
 @MainActor
 struct StockViewModelTests {
     
+    @Test func loadEmptyStockList() async throws {
+        // Given
+        let mockService = MockStockService()
+        let mockUserDefaults = MockUserDefaults()
+        let viewModel = StockViewModel(stockService: mockService, userDefaults: mockUserDefaults)
+        
+        // Empty stock list
+        mockService.stocksToReturn = []
+        
+        // When
+        await viewModel.loadStocks()
+        
+        // Then
+        #expect(viewModel.stocks.isEmpty, "ViewModel should have empty stocks array")
+        #expect(viewModel.featuredStocks.isEmpty, "Featured stocks should be empty")
+        #expect(viewModel.favorites.isEmpty, "Favorites should be empty")
+        #expect(viewModel.isLoading == false, "Loading state should be false after fetch")
+        #expect(viewModel.errorMessage == nil, "Error message should be nil after successful fetch")
+    }
+    
     @Test func loadStocksSuccess() async throws {
         // Given
         let mockService = MockStockService()
@@ -151,5 +171,69 @@ struct StockViewModelTests {
         // Then - New view model should have updated favorites
         #expect(newViewModel.favoriteStocks.count == 3, "Should have 3 favorites in new view model")
         #expect(newViewModel.favoriteStocks.contains("MSFT"), "Should contain newly added MSFT")
+    }
+    
+    @Test func favoritesWithInvalidStockIDs() async throws {
+        // Given
+        let mockService = MockStockService()
+        let mockUserDefaults = MockUserDefaults()
+        
+        // Set up favorites that don't exist in our stock list
+        mockUserDefaults.set(["NONEXISTENT1", "NONEXISTENT2"], forKey: "favoriteStocks")
+        let viewModel = StockViewModel(stockService: mockService, userDefaults: mockUserDefaults)
+        
+        // Add real stocks
+        mockService.stocksToReturn = MockStockService.createTestStocks()
+        await viewModel.loadStocks()
+        
+        // When
+        let favorites = viewModel.favorites
+        
+        // Then
+        #expect(viewModel.favoriteStocks.count == 2, "Should have 2 favorite IDs")
+        #expect(favorites.isEmpty, "Should have 0 actual favorite stocks because the IDs don't match any stocks")
+    }
+    
+    @Test func emptyFeaturedStocks() async throws {
+        // Given
+        let mockService = MockStockService()
+        let mockUserDefaults = MockUserDefaults()
+        let viewModel = StockViewModel(stockService: mockService, userDefaults: mockUserDefaults)
+        
+        // Use test factory to create non-featured stocks
+        mockService.stocksToReturn = TestFactory.createStocks(count: 5, featured: false)
+        
+        // When
+        await viewModel.loadStocks()
+        
+        // Then
+        #expect(viewModel.stocks.count == 5, "Should have 5 stocks")
+        #expect(viewModel.featuredStocks.isEmpty, "Featured stocks should be empty")
+    }
+    
+    @Test func testWithMixedStocksAndFavorites() async throws {
+        // Given
+        let mockService = MockStockService()
+        let mockUserDefaults = MockUserDefaults()
+        
+        // Set up favorites
+        mockUserDefaults.setupFavorites(["TEST0", "TEST3"])
+        
+        let viewModel = StockViewModel(stockService: mockService, userDefaults: mockUserDefaults)
+        
+        // Use test factory to create a mix of featured and non-featured stocks
+        mockService.stocksToReturn = TestFactory.createMixedStocks(featuredCount: 2, normalCount: 3)
+        
+        // When
+        await viewModel.loadStocks()
+        
+        // Then
+        #expect(viewModel.stocks.count == 5, "Should have 5 stocks total")
+        #expect(viewModel.featuredStocks.count == 2, "Should have 2 featured stocks")
+        #expect(viewModel.favorites.count == 2, "Should have 2 favorite stocks")
+        
+        // Test that both lists correctly identify the right stocks
+        #expect(viewModel.featuredStocks.allSatisfy { $0.isFeatured }, "All featured stocks should have isFeatured=true")
+        #expect(viewModel.favorites.allSatisfy { viewModel.favoriteStocks.contains($0.id) }, "All favorites should have their ID in favoriteStocks")
     }
 }
