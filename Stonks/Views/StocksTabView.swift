@@ -81,6 +81,7 @@ struct StocksTabView: View {
                 }
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

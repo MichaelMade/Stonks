@@ -95,6 +95,7 @@ struct FavoritesTabView: View {
             // Support dynamic type
             .dynamicTypeSize(.xSmall ... .xxxLarge)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
