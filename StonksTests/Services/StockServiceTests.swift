@@ -80,4 +80,51 @@ struct StockServiceTests {
         let elapsedTime = Date().timeIntervalSince(startTime)
         #expect(elapsedTime >= 1.0, "Service should simulate network delay of at least 1 second")
     }
+    
+    @Test func stockServiceErrorTypes() async {
+        // Test different error scenarios
+        let mockService = MockStockService()
+        
+        // Test invalid response error
+        mockService.errorToThrow = StockError.invalidResponse
+        await #expect(throws: StockError.invalidResponse) {
+            try await mockService.fetchStocks()
+        }
+        
+        // Test generic network error
+        struct NetworkError: Error {}
+        mockService.errorToThrow = NetworkError()
+        await #expect(throws: NetworkError.self) {
+            try await mockService.fetchStocks()
+        }
+    }
+    
+    @Test func concurrentStockFetching() async throws {
+        // Test that multiple concurrent requests work correctly
+        let mockService = MockStockService()
+        mockService.stocksToReturn = MockStockService.createTestStocks()
+        mockService.delayInSeconds = 1
+        
+        // When - Make 3 concurrent requests
+        let startTime = Date()
+        
+        let allResults = try await withThrowingTaskGroup(of: [Stock].self) { group in
+            group.addTask { try await mockService.fetchStocks() }
+            group.addTask { try await mockService.fetchStocks() }
+            group.addTask { try await mockService.fetchStocks() }
+            
+            var results: [[Stock]] = []
+            for try await result in group {
+                results.append(result)
+            }
+            return results
+        }
+        
+        let elapsedTime = Date().timeIntervalSince(startTime)
+        
+        // Then - All requests should complete and run concurrently (not take 3+ seconds)
+        #expect(allResults.count == 3, "Should have 3 results")
+        #expect(allResults.allSatisfy { $0.count == 4 }, "Each result should have 4 stocks")
+        #expect(elapsedTime < 2.0, "Concurrent requests should not take 3+ seconds sequentially")
+    }
 }

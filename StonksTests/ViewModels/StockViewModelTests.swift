@@ -236,4 +236,108 @@ struct StockViewModelTests {
         #expect(viewModel.featuredStocks.allSatisfy { $0.isFeatured }, "All featured stocks should have isFeatured=true")
         #expect(viewModel.favorites.allSatisfy { viewModel.favoriteStocks.contains($0.id) }, "All favorites should have their ID in favoriteStocks")
     }
+    
+    @Test func viewModelStateManagement() async throws {
+        // Test that loading states are managed correctly
+        let mockService = MockStockService()
+        let mockUserDefaults = MockUserDefaults()
+        let viewModel = StockViewModel(stockService: mockService, userDefaults: mockUserDefaults)
+        
+        mockService.stocksToReturn = MockStockService.createTestStocks()
+        mockService.delayInSeconds = 1
+        
+        // Initially should not be loading
+        #expect(viewModel.isLoading == false, "Should not be loading initially")
+        #expect(viewModel.errorMessage == nil, "Should have no error initially")
+        
+        // Start loading
+        let loadTask = Task {
+            await viewModel.loadStocks()
+        }
+        
+        // Should be loading immediately after task starts
+        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        #expect(viewModel.isLoading == true, "Should be loading during fetch")
+        #expect(viewModel.errorMessage == nil, "Should have no error during loading")
+        
+        // Wait for completion
+        await loadTask.value
+        
+        // Should finish loading successfully
+        #expect(viewModel.isLoading == false, "Should not be loading after completion")
+        #expect(viewModel.errorMessage == nil, "Should have no error after successful fetch")
+        #expect(viewModel.stocks.count == 4, "Should have loaded stocks")
+    }
+    
+    @Test func multipleLoadRequests() async throws {
+        // Test behavior when multiple load requests are made concurrently
+        let mockService = MockStockService()
+        let mockUserDefaults = MockUserDefaults()
+        let viewModel = StockViewModel(stockService: mockService, userDefaults: mockUserDefaults)
+        
+        mockService.stocksToReturn = MockStockService.createTestStocks()
+        mockService.delayInSeconds = 1
+        
+        // Start multiple load requests concurrently using Task.async
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await viewModel.loadStocks() }
+            group.addTask { await viewModel.loadStocks() }
+            group.addTask { await viewModel.loadStocks() }
+        }
+        
+        // Should have consistent final state
+        #expect(viewModel.isLoading == false, "Should not be loading after all requests complete")
+        #expect(viewModel.stocks.count == 4, "Should have correct number of stocks")
+        #expect(viewModel.errorMessage == nil, "Should have no error after successful loads")
+    }
+    
+    @Test func favoriteToggleRapidFire() async throws {
+        // Test rapid favorite toggling
+        let mockService = MockStockService()
+        let mockUserDefaults = MockUserDefaults()
+        let viewModel = StockViewModel(stockService: mockService, userDefaults: mockUserDefaults)
+        
+        mockService.stocksToReturn = MockStockService.createTestStocks()
+        await viewModel.loadStocks()
+        
+        let testStock = viewModel.stocks[0]
+        
+        // Rapidly toggle favorite status multiple times
+        for _ in 0..<10 {
+            viewModel.toggleFavorite(for: testStock)
+        }
+        
+        // Should end up back at not-favorite (10 toggles = even number)
+        #expect(!viewModel.isFavorite(stock: testStock), "Should not be favorite after even number of toggles")
+        #expect(viewModel.favoriteStocks.count == 0, "Should have no favorites")
+        
+        // Toggle once more to make it favorite
+        viewModel.toggleFavorite(for: testStock)
+        #expect(viewModel.isFavorite(stock: testStock), "Should be favorite after odd number of toggles")
+        #expect(viewModel.favoriteStocks.count == 1, "Should have 1 favorite")
+    }
+    
+    @Test func errorRecovery() async throws {
+        // Test that view model can recover from errors
+        let mockService = MockStockService()
+        let mockUserDefaults = MockUserDefaults()
+        let viewModel = StockViewModel(stockService: mockService, userDefaults: mockUserDefaults)
+        
+        // First request fails
+        mockService.errorToThrow = StockError.failedToLoadData
+        await viewModel.loadStocks()
+        
+        #expect(viewModel.stocks.isEmpty, "Should have no stocks after error")
+        #expect(viewModel.errorMessage != nil, "Should have error message")
+        #expect(!viewModel.isLoading, "Should not be loading after error")
+        
+        // Second request succeeds
+        mockService.errorToThrow = nil
+        mockService.stocksToReturn = MockStockService.createTestStocks()
+        await viewModel.loadStocks()
+        
+        #expect(viewModel.stocks.count == 4, "Should have stocks after successful recovery")
+        #expect(viewModel.errorMessage == nil, "Should clear error message on success")
+        #expect(!viewModel.isLoading, "Should not be loading after success")
+    }
 }

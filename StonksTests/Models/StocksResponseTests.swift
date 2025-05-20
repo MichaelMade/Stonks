@@ -82,4 +82,65 @@ struct StocksResponseTests {
         let decodedData = try? decoder.decode(StocksResponse.self, from: invalidJsonData)
         #expect(decodedData == nil)
     }
+    
+    @Test func handlesEmptyStocksList() throws {
+        // Given JSON with empty stocks array
+        let emptyJsonString = """
+        {
+          "stocks": []
+        }
+        """
+        
+        let jsonData = emptyJsonString.data(using: .utf8)!
+        
+        // When
+        let decoder = JSONDecoder()
+        let stocksResponse = try decoder.decode(StocksResponse.self, from: jsonData)
+        
+        // Then
+        #expect(stocksResponse.stocks.isEmpty, "Should handle empty stocks array")
+    }
+    
+    @Test func handlesExtremeValues() throws {
+        // Test with very large and small price values
+        let extremeJsonString = """
+        {
+          "stocks": [
+            {
+              "id": "PENNY",
+              "ticker": "PENNY",
+              "name": "Penny Stock",
+              "currentPrice": 0.01,
+              "previousClosePrice": 0.02,
+              "isFeatured": false
+            },
+            {
+              "id": "EXPENSIVE",
+              "ticker": "EXPENSIVE",
+              "name": "Expensive Stock",
+              "currentPrice": 999999.99,
+              "previousClosePrice": 1000000.00,
+              "isFeatured": true
+            }
+          ]
+        }
+        """
+        
+        let jsonData = extremeJsonString.data(using: .utf8)!
+        
+        // When
+        let decoder = JSONDecoder()
+        let stocksResponse = try decoder.decode(StocksResponse.self, from: jsonData)
+        
+        // Then
+        #expect(stocksResponse.stocks.count == 2, "Should decode both extreme value stocks")
+        
+        let pennyStock = stocksResponse.stocks[0]
+        #expect(pennyStock.currentPrice == 0.01, "Should handle very small prices")
+        #expect(abs(pennyStock.priceChange - (-0.01)) < 0.001, "Should calculate negative penny change")
+        
+        let expensiveStock = stocksResponse.stocks[1]
+        #expect(expensiveStock.currentPrice == 999999.99, "Should handle very large prices")
+        #expect(abs(expensiveStock.priceChange - (-0.01)) < 0.001, "Should calculate change for large numbers")
+    }
 }
