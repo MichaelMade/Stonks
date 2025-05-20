@@ -11,8 +11,6 @@ struct StockCellView: View {
     let stock: Stock
     @EnvironmentObject var viewModel: StockViewModel
     
-    @State private var isPressed = false
-    
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
@@ -28,17 +26,17 @@ struct StockCellView: View {
             Spacer()
             
             VStack(alignment: .trailing, spacing: 4) {
-                Text("$\(String(format: "%.2f", stock.currentPrice))")
+                Text(stock.formattedCurrentPrice)
                     .font(.headline)
                     .foregroundColor(ColorTheme.label)
                 
                 HStack(spacing: 2) {
-                    Image(systemName: stock.priceChange >= 0 ? "arrow.up" : "arrow.down")
+                    Image(systemName: ColorTheme.priceChangeIcon(for: stock.priceChange))
                     
-                    Text("\(stock.priceChange >= 0 ? "+" : "")\(String(format: "%.2f", stock.priceChange)) (\(String(format: "%.2f", stock.priceChangePercentage))%)")
+                    Text("\(stock.formattedPriceChange) (\(stock.formattedPriceChangePercentage))")
                         .font(.subheadline)
                 }
-                .foregroundColor(stock.priceChange >= 0 ? ColorTheme.positiveChange : ColorTheme.negativeChange)
+                .foregroundColor(ColorTheme.priceChangeColor(for: stock.priceChange))
             }
             
             Button(action: {
@@ -66,15 +64,25 @@ struct StockCellView: View {
                         .stroke(ColorTheme.accent.opacity(0.1), lineWidth: 1)
                 )
         )
-        .shadow(color: Color.black.opacity(isPressed ? 0.12 : 0.06), radius: isPressed ? 6 : 4, x: 0, y: isPressed ? 4 : 2)
-        .scaleEffect(isPressed ? 0.98 : 1.0)
-        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isPressed)
+        .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 2)
         // Accessibility
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(stock.name), \(stock.ticker), Price: $\(String(format: "%.2f", stock.currentPrice))")
-        .accessibilityValue("\(stock.priceChange >= 0 ? "Up" : "Down") \(String(format: "%.2f", abs(stock.priceChange))), \(String(format: "%.2f", abs(stock.priceChangePercentage)))% \(stock.priceChange >= 0 ? "gain" : "loss"), \(viewModel.isFavorite(stock: stock) ? "favorited" : "not in favorites")")
+        .accessibilityLabel(accessibilityLabelText)
+        .accessibilityValue(accessibilityValueText)
         // Support Dynamic Type
         .dynamicTypeSize(.xSmall ... .xxxLarge)
+    }
+    
+    private var accessibilityLabelText: String {
+        "\(stock.name), \(stock.ticker), Price: \(stock.formattedCurrentPrice)"
+    }
+    
+    private var accessibilityValueText: String {
+        let amount = String(format: "%.2f", abs(stock.priceChange))
+        let percentage = String(format: "%.2f", abs(stock.priceChangePercentage))
+        let favoriteStatus = viewModel.isFavorite(stock: stock) ? "favorited" : "not favorited"
+        
+        return "\(stock.priceChangeDirection) by $\(amount), \(percentage) percent, \(favoriteStatus)"
     }
 }
 

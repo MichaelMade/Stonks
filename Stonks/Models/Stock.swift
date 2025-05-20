@@ -23,6 +23,26 @@ struct Stock: Identifiable, Codable, Equatable {
         return (priceChange / previousClosePrice) * 100
     }
     
+    // MARK: - Formatted Properties
+    var formattedCurrentPrice: String {
+        String(format: "$%.2f", currentPrice)
+    }
+    
+    var formattedPriceChange: String {
+        let sign = priceChange >= 0 ? "+" : ""
+        return "\(sign)\(String(format: "%.2f", priceChange))"
+    }
+    
+    var formattedPriceChangePercentage: String {
+        let sign = priceChangePercentage >= 0 ? "+" : ""
+        return "\(sign)\(String(format: "%.2f", priceChangePercentage))%"
+    }
+    
+    var priceChangeDirection: String {
+        priceChange >= 0 ? "increased" : "decreased"
+    }
+    
+    // Custom equality based on ID only (since Stock conforms to Identifiable)
     static func == (lhs: Stock, rhs: Stock) -> Bool {
         return lhs.id == rhs.id
     }

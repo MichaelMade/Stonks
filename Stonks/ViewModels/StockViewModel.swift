@@ -10,25 +10,32 @@ import SwiftUI
 
 @MainActor
 class StockViewModel: ObservableObject {
-    @Published var stocks: [Stock] = []
-    @Published var favoriteStocks: [String] = []
+    @Published var stocks: [Stock] = [] {
+        didSet {
+            updateDerivedProperties()
+        }
+    }
+    @Published var favoriteStocks: [String] = [] {
+        didSet {
+            updateDerivedProperties()
+        }
+    }
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var lastError: Error?
+    
+    // Cached computed properties
+    @Published private(set) var featuredStocks: [Stock] = []
+    @Published private(set) var favorites: [Stock] = []
+    @Published private(set) var sortedFavorites: [Stock] = []
+    @Published private(set) var stocksWithIndices: [(Int, Stock)] = []
     
     private let stockService: StockServiceProtocol
     private let userDefaults: UserDefaults
     private let favoritesKey = "favoriteStocks"
     private var retryCount = 0
     private let maxRetries = 3
-    
-    var featuredStocks: [Stock] {
-        stocks.filter { $0.isFeatured }
-    }
-    
-    var favorites: [Stock] {
-        stocks.filter { favoriteStocks.contains($0.id) }
-    }
+    private var favoriteSortAscending = false
     
     init(stockService: StockServiceProtocol = StockService(), userDefaults: UserDefaults = .standard) {
         self.stockService = stockService
@@ -121,8 +128,33 @@ class StockViewModel: ObservableObject {
         favoriteStocks = userDefaults.stringArray(forKey: favoritesKey) ?? []
     }
     
+    // MARK: - Derived Properties Update
+    
+    private func updateDerivedProperties() {
+        featuredStocks = stocks.filter { $0.isFeatured }
+        favorites = stocks.filter { favoriteStocks.contains($0.id) }
+        stocksWithIndices = Array(stocks.enumerated())
+        updateSortedFavorites()
+    }
+    
     // MARK: - Sorting
     
+    func setSortOrder(ascending: Bool) {
+        favoriteSortAscending = ascending
+        updateSortedFavorites()
+    }
+    
+    private func updateSortedFavorites() {
+        sortedFavorites = favorites.sorted { 
+            favoriteSortAscending ? $0.priceChange < $1.priceChange : $0.priceChange > $1.priceChange
+        }
+    }
+    
+    var isSortedAscending: Bool {
+        favoriteSortAscending
+    }
+    
+    // Keep this for backward compatibility during transition
     func sortFavorites(byPriceChangeAscending ascending: Bool) -> [Stock] {
         return favorites.sorted {
             if ascending {

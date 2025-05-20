@@ -38,6 +38,7 @@ struct FavoritesTabView: View {
                                     Button(action: { 
                                         withAnimation {
                                             sortAscending.toggle()
+                                            viewModel.setSortOrder(ascending: sortAscending)
                                         }
                                     }) {
                                         HStack {
@@ -62,7 +63,7 @@ struct FavoritesTabView: View {
                                 
                                 ScrollView {
                                     LazyVStack(spacing: 12) {
-                                        ForEach(Array(viewModel.sortFavorites(byPriceChangeAscending: sortAscending).enumerated()), id: \.element.id) { index, stock in
+                                        ForEach(Array(viewModel.sortedFavorites.enumerated()), id: \.element.id) { index, stock in
                                             StockCellView(stock: stock)
                                             .transition(.asymmetric(
                                                 insertion: .move(edge: .trailing).combined(with: .opacity),

@@ -22,4 +22,14 @@ struct ColorTheme {
     static let label = Color(.label)
     static let secondaryLabel = Color(.secondaryLabel)
     static let tertiaryLabel = Color(.tertiaryLabel)
+    
+    // MARK: - Helper Methods
+    
+    static func priceChangeColor(for change: Double) -> Color {
+        change >= 0 ? positiveChange : negativeChange
+    }
+    
+    static func priceChangeIcon(for change: Double) -> String {
+        change >= 0 ? "arrow.up" : "arrow.down"
+    }
 }

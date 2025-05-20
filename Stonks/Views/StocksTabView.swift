@@ -49,13 +49,13 @@ struct StocksTabView: View {
                                 .accessibilityAddTraits(.isHeader)
                             
                             LazyVStack(spacing: 12) {
-                                ForEach(Array(viewModel.stocks.enumerated()), id: \.element.id) { index, stock in
+                                ForEach(viewModel.stocksWithIndices, id: \.1.id) { index, stock in
                                     StockCellView(stock: stock)
                                     .transition(.asymmetric(
                                         insertion: .move(edge: .trailing).combined(with: .opacity),
                                         removal: .move(edge: .leading).combined(with: .opacity)
                                     ))
-                                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(Double(index) * 0.05), value: viewModel.stocks)
+                                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(animationDelay(for: index)), value: viewModel.stocks)
                                 }
                             }
                             .padding(.horizontal)
@@ -82,6 +82,10 @@ struct StocksTabView: View {
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
+    }
+    
+    private func animationDelay(for index: Int) -> Double {
+        Double(index) * 0.05
     }
 }
 

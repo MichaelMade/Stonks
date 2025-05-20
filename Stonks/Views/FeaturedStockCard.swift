@@ -41,17 +41,17 @@ struct FeaturedStockCard: View {
             
             Spacer()
             
-            Text("$\(String(format: "%.2f", stock.currentPrice))")
+            Text(stock.formattedCurrentPrice)
                 .font(.headline)
                 .foregroundColor(ColorTheme.label)
             
             HStack(spacing: 2) {
-                Image(systemName: stock.priceChange >= 0 ? "arrow.up" : "arrow.down")
+                Image(systemName: ColorTheme.priceChangeIcon(for: stock.priceChange))
                 
-                Text("\(stock.priceChange >= 0 ? "+" : "")\(String(format: "%.2f", stock.priceChange))")
+                Text(stock.formattedPriceChange)
                     .font(.subheadline)
             }
-            .foregroundColor(stock.priceChange >= 0 ? ColorTheme.positiveChange : ColorTheme.negativeChange)
+            .foregroundColor(ColorTheme.priceChangeColor(for: stock.priceChange))
         }
         .padding(12)
         .background(
@@ -69,7 +69,7 @@ struct FeaturedStockCard: View {
         // Accessibility
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(stock.ticker), \(stock.name)")
-        .accessibilityValue("Price: $\(String(format: "%.2f", stock.currentPrice)), \(stock.priceChange >= 0 ? "Up" : "Down") \(String(format: "%.2f", abs(stock.priceChange)))")
+        .accessibilityValue("Price: \(stock.formattedCurrentPrice), \(stock.priceChangeDirection) by $\(String(format: "%.2f", abs(stock.priceChange)))")
         // Dynamic Type support
         .dynamicTypeSize(.xSmall ... .xxxLarge)
     }
