@@ -103,11 +103,6 @@ The app follows the MVVM (Model-View-ViewModel) architecture:
 - **Testing**: Full unit test coverage for ViewModels and Services
 - **Mocking**: Protocol-based design enables easy testing with mock services
 - **Performance**: Optimized with computed properties and efficient state management
-- **Code Simplification**: Recent cleanup removed ~95 lines while maintaining functionality:
-  - Removed unused FormattingService
-  - Simplified ViewModel with computed properties instead of caching
-  - Streamlined error handling by removing complex retry logic
-  - Fixed Stock equality for proper ID-based comparison
 
 ## Future Improvements
 

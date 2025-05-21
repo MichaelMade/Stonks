@@ -47,7 +47,7 @@
    - ✅ Featured stocks section
    - ✅ All stocks listing
    - ✅ Loading, error, and empty states
-   - ✅ Pull-to-refresh functionality
+   - ✅ Auto-load on first view
 
 3. **FavoritesTabView.swift** ✅
    - ✅ Favorites listing with sorting
@@ -100,18 +100,6 @@
 ✅ Smooth animations and transitions
 ✅ Data persistence with UserDefaults
 ✅ Protocol-based design for testability
-
-## Recent Code Cleanup & Simplification ✅
-✅ Removed redundant `sortFavorites(byPriceChangeAscending:)` method from StockViewModel
-✅ Updated related tests to use the `sortedFavorites` property instead
-✅ Removed unused FormattingService - Stock model handles its own formatting
-✅ Simplified computed properties by removing explicit `return` statements
-✅ Removed unnecessary SwiftUI import from StockViewModel
-✅ Replaced cached properties with simple computed properties for better maintainability
-✅ Removed complex retry functionality - simplified to basic error handling with manual retry
-✅ Streamlined ErrorView interface by removing conditional retry parameters
-✅ Fixed Stock equality implementation for proper ID-based comparison
-✅ Eliminated ~95 lines of unnecessary code while maintaining all functionality
 
 ## Future Enhancements
 - Real API integration (Alpha Vantage, Finnhub, etc.)
