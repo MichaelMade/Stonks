@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 @MainActor
 class StockViewModel: ObservableObject {
@@ -95,7 +94,7 @@ class StockViewModel: ObservableObject {
     }
     
     var canRetry: Bool {
-        return lastError != nil && !isLoading
+        lastError != nil && !isLoading
     }
     
     var isRetryableError: Bool {
@@ -115,7 +114,7 @@ class StockViewModel: ObservableObject {
     }
     
     func isFavorite(stock: Stock) -> Bool {
-        return favoriteStocks.contains(stock.id)
+        favoriteStocks.contains(stock.id)
     }
     
     // MARK: - Persistence

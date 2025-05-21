@@ -78,11 +78,8 @@ struct StockCellView: View {
     }
     
     private var accessibilityValueText: String {
-        let amount = String(format: "%.2f", abs(stock.priceChange))
-        let percentage = String(format: "%.2f", abs(stock.priceChangePercentage))
         let favoriteStatus = viewModel.isFavorite(stock: stock) ? "favorited" : "not favorited"
-        
-        return "\(stock.priceChangeDirection) by $\(amount), \(percentage) percent, \(favoriteStatus)"
+        return "\(stock.priceChangeDirection) by $\(String(format: "%.2f", abs(stock.priceChange))), \(String(format: "%.2f", abs(stock.priceChangePercentage))) percent, \(favoriteStatus)"
     }
 }
 
