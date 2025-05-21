@@ -90,7 +90,6 @@ The app follows the MVVM (Model-View-ViewModel) architecture:
   - `StockViewModel.swift`: Manages stock data and app state with reactive properties
 - **Services**
   - `StockService.swift`: Handles mock API requests with error handling
-  - `FormattingService.swift`: Centralized formatting for currency and percentages
 - **Utilities**
   - `ColorTheme.swift`: Defines color scheme for light and dark mode
   - `StockError.swift`: Custom error types with localized descriptions
@@ -100,11 +99,15 @@ The app follows the MVVM (Model-View-ViewModel) architecture:
 ## Code Quality & Testing
 
 - **Architecture**: Clean MVVM pattern with proper separation of concerns
-- **Error Handling**: Comprehensive error types with user-friendly messages
+- **Error Handling**: Simplified error handling with user-friendly messages and manual retry
 - **Testing**: Full unit test coverage for ViewModels and Services
 - **Mocking**: Protocol-based design enables easy testing with mock services
-- **Performance**: Optimized with lazy loading and efficient state management
-- **Code Cleanup**: Recently removed redundant methods to maintain clean APIs
+- **Performance**: Optimized with computed properties and efficient state management
+- **Code Simplification**: Recent cleanup removed ~95 lines while maintaining functionality:
+  - Removed unused FormattingService
+  - Simplified ViewModel with computed properties instead of caching
+  - Streamlined error handling by removing complex retry logic
+  - Fixed Stock equality for proper ID-based comparison
 
 ## Future Improvements
 
