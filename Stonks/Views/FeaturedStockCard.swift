@@ -24,10 +24,13 @@ struct FeaturedStockCard: View {
                 Button(action: {
                     let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                     impactFeedback.impactOccurred()
-                    viewModel.toggleFavorite(for: stock)
+                    withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                        viewModel.toggleFavorite(for: stock)
+                    }
                 }) {
                     Image(systemName: viewModel.isFavorite(stock: stock) ? "star.fill" : "star")
                         .foregroundColor(viewModel.isFavorite(stock: stock) ? ColorTheme.favorite : .gray)
+                        .scaleEffect(viewModel.isFavorite(stock: stock) ? 1.1 : 1.0)
                         .accessibilityLabel(viewModel.isFavorite(stock: stock) ? "Remove from favorites" : "Add to favorites")
                 }
                 .buttonStyle(BorderlessButtonStyle())

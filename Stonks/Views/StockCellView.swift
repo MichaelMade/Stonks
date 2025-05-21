@@ -49,6 +49,7 @@ struct StockCellView: View {
                 Image(systemName: viewModel.isFavorite(stock: stock) ? "star.fill" : "star")
                     .foregroundColor(viewModel.isFavorite(stock: stock) ? ColorTheme.favorite : .gray)
                     .font(.title2)
+                    .scaleEffect(viewModel.isFavorite(stock: stock) ? 1.1 : 1.0)
                     .accessibilityLabel(viewModel.isFavorite(stock: stock) ? "Remove from favorites" : "Add to favorites")
             }
             .buttonStyle(BorderlessButtonStyle())
@@ -65,6 +66,7 @@ struct StockCellView: View {
                 )
         )
         .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 2)
+        .contentShape(Rectangle())
         // Accessibility
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabelText)

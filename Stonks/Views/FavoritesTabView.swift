@@ -36,7 +36,7 @@ struct FavoritesTabView: View {
                                         .foregroundColor(ColorTheme.secondaryLabel)
                                     
                                     Button(action: { 
-                                        withAnimation {
+                                        withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                                             sortAscending.toggle()
                                             viewModel.setSortOrder(ascending: sortAscending)
                                         }
@@ -46,8 +46,13 @@ struct FavoritesTabView: View {
                                                 .font(.subheadline)
                                             
                                             Image(systemName: sortAscending ? "arrow.up" : "arrow.down")
+                                                .rotationEffect(.degrees(sortAscending ? 0 : 180))
                                         }
                                         .foregroundColor(ColorTheme.accent)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(ColorTheme.accent.opacity(0.1))
+                                        .cornerRadius(8)
                                     }
                                     .accessibilityLabel("Sort by price change")
                                     .accessibilityValue(sortAscending ? "Ascending" : "Descending")
