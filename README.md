@@ -39,6 +39,9 @@ The app follows the MVVM (Model-View-ViewModel) architecture:
 - Vertical list of all stocks
 - Favorites tab with sorting capabilities 
 - Persistence of favorites across app restarts using UserDefaults
+- **Modern floating tab bar** with frosted glass effect and sliding indicator
+- **Swipe navigation** between tabs with natural gesture support
+- **Enhanced animations** including star button scaling and haptic feedback
 - Support for light and dark mode
 - Smooth animations for state transitions
 - Responsive design for different iPhone screen sizes
@@ -63,6 +66,11 @@ The app follows the MVVM (Model-View-ViewModel) architecture:
 - Implemented proper error handling for potential failures
 
 ### UI/UX
+- **Floating Tab Bar**: Custom frosted glass tab bar with ultra-thin material effect
+- **Swipe Navigation**: Natural swipe gestures between tabs with page-style transitions
+- **Sliding Indicator**: Animated background that follows tab selection
+- **Enhanced Interactions**: Scale effects on star buttons with haptic feedback
+- **Polished Animations**: Smooth spring animations throughout the interface
 - Implemented light and dark mode support with system-aware color theming
 - Added animations for UI transitions to create a polished feel
 - Created a responsive design that works across different iPhone screen sizes
@@ -103,6 +111,11 @@ The app follows the MVVM (Model-View-ViewModel) architecture:
 - **Testing**: Full unit test coverage for ViewModels and Services
 - **Mocking**: Protocol-based design enables easy testing with mock services
 - **Performance**: Optimized with computed properties and efficient state management
+- **Modern UI Enhancements**: Added contemporary design patterns and smooth interactions:
+  - Floating tab bar with frosted glass material effect
+  - Swipe gesture navigation with animated tab switching
+  - Enhanced button animations with scale effects and haptic feedback
+  - Improved visual feedback throughout the interface
 
 ## Future Improvements
 
