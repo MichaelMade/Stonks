@@ -10,15 +10,11 @@ import SwiftUI
 struct ErrorView: View {
     let message: String
     let onRetry: () -> Void
-    let error: Error?
-    let showRetryButton: Bool
     
     @State private var isAnimating = false
     
-    init(message: String, error: Error? = nil, showRetryButton: Bool = true, onRetry: @escaping () -> Void) {
+    init(message: String, onRetry: @escaping () -> Void) {
         self.message = message
-        self.error = error
-        self.showRetryButton = showRetryButton
         self.onRetry = onRetry
     }
     
@@ -49,20 +45,9 @@ struct ErrorView: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 
-                // Show recovery suggestion if available
-                if let stockError = error as? StockError, 
-                   let suggestion = stockError.recoverySuggestion {
-                    Text(suggestion)
-                        .font(.caption)
-                        .foregroundColor(ColorTheme.tertiaryLabel)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 4)
-                        .padding(.horizontal)
-                }
             }
             
-            if showRetryButton {
-                Button(action: onRetry) {
+            Button(action: onRetry) {
                 HStack(spacing: 8) {
                     Image(systemName: "arrow.clockwise")
                         .font(.headline)
@@ -85,7 +70,6 @@ struct ErrorView: View {
                 .shadow(color: ColorTheme.accent.opacity(0.3), radius: 10, x: 0, y: 4)
                 }
                 .buttonStyle(PlainButtonStyle())
-            }
         }
         .padding()
         .onAppear {
@@ -104,14 +88,6 @@ struct ErrorView: View {
     VStack(spacing: 40) {
         ErrorView(
             message: "Unable to load stock data. Please check your internet connection and try again.",
-            error: StockError.networkUnavailable,
-            onRetry: {}
-        )
-        
-        ErrorView(
-            message: "Data format error occurred.",
-            error: StockError.decodingFailed(DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "Invalid JSON"))),
-            showRetryButton: false,
             onRetry: {}
         )
     }

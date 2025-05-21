@@ -21,16 +21,10 @@ struct StocksTabView: View {
                         .accessibilityLabel("Loading stocks")
                 } else if let errorMessage = viewModel.errorMessage {
                     ErrorView(
-                        message: errorMessage,
-                        error: viewModel.lastError,
-                        showRetryButton: viewModel.canRetry
+                        message: errorMessage
                     ) {
                         Task {
-                            if viewModel.isRetryableError {
-                                await viewModel.retryLoading()
-                            } else {
-                                await viewModel.loadStocks()
-                            }
+                            await viewModel.loadStocks()
                         }
                     }
                 } else {

@@ -13,13 +13,10 @@ class StockViewModel: ObservableObject {
     @Published var favoriteStocks: [String] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var lastError: Error?
     
     private let stockService: StockServiceProtocol
     private let userDefaults: UserDefaults
     private let favoritesKey = "favoriteStocks"
-    private var retryCount = 0
-    private let maxRetries = 3
     private var favoriteSortAscending = false
     
     init(stockService: StockServiceProtocol = StockService(), userDefaults: UserDefaults = .standard) {
@@ -29,62 +26,22 @@ class StockViewModel: ObservableObject {
     }
     
     func loadStocks() async {
-        await loadStocksWithRetry()
-    }
-    
-    private func loadStocksWithRetry() async {
         isLoading = true
         errorMessage = nil
-        lastError = nil
         
         do {
             stocks = try await stockService.fetchStocks()
-            retryCount = 0
             isLoading = false
         } catch {
-            lastError = error
             isLoading = false
             
-            // Handle specific error types
             switch error {
                 case let stockError as StockError:
                     errorMessage = stockError.localizedDescription
-                    
-                    // Auto-retry for certain error types
-                    if shouldRetry(for: stockError) && retryCount < maxRetries {
-                        retryCount += 1
-                        // Wait before retrying (exponential backoff)
-                        let delay = UInt64(pow(2.0, Double(retryCount)) * 1_000_000_000) // 2^retryCount seconds
-                        try? await Task.sleep(nanoseconds: delay)
-                        await loadStocksWithRetry()
-                    }
                 default:
                     errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
             }
         }
-    }
-    
-    private func shouldRetry(for error: StockError) -> Bool {
-        switch error {
-            case .networkUnavailable, .failedToLoadData:
-                return true
-            case .invalidResponse, .decodingFailed, .fileNotFound:
-                return false
-        }
-    }
-    
-    func retryLoading() async {
-        retryCount = 0
-        await loadStocks()
-    }
-    
-    var canRetry: Bool {
-        lastError != nil && !isLoading
-    }
-    
-    var isRetryableError: Bool {
-        guard let stockError = lastError as? StockError else { return true }
-        return shouldRetry(for: stockError)
     }
     
     // MARK: - Favorites Management
