@@ -56,14 +56,6 @@ struct StocksTabView: View {
                         }
                         .padding(.vertical)
                     }
-                    .refreshable {
-                        await viewModel.loadStocks()
-                    }
-                    .accessibilityAction(named: "Refresh stocks") {
-                        Task {
-                            await viewModel.loadStocks()
-                        }
-                    }
                 }
             }
             .navigationTitle("Stonks")
