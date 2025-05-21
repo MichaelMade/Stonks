@@ -42,6 +42,9 @@ struct Stock: Identifiable, Codable, Equatable {
         priceChange >= 0 ? "increased" : "decreased"
     }
     
+    static func == (lhs: Stock, rhs: Stock) -> Bool {
+        lhs.id == rhs.id
+    }
 }
 
 // Response structure for decoding the API response
