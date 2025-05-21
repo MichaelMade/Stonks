@@ -39,7 +39,8 @@ The app follows the MVVM (Model-View-ViewModel) architecture:
 - Vertical list of all stocks
 - Favorites tab with sorting capabilities 
 - Persistence of favorites across app restarts using UserDefaults
-- **Modern floating tab bar** with frosted glass effect and sliding indicator
+- **Navigation title colors** that properly adapt to light and dark mode
+- **Standard iOS tab bar** with native design patterns for better usability
 - **Swipe navigation** between tabs with natural gesture support
 - **Enhanced animations** including star button scaling and haptic feedback
 - Support for light and dark mode
@@ -66,9 +67,9 @@ The app follows the MVVM (Model-View-ViewModel) architecture:
 - Implemented proper error handling for potential failures
 
 ### UI/UX
-- **Floating Tab Bar**: Custom frosted glass tab bar with ultra-thin material effect
-- **Swipe Navigation**: Natural swipe gestures between tabs with page-style transitions
-- **Sliding Indicator**: Animated background that follows tab selection
+- **Navigation Colors**: Fixed navigation title colors to properly adapt to light/dark mode
+- **Standard Tab Bar**: Native iOS tab bar design for better usability and accessibility
+- **Swipe Navigation**: Natural swipe gestures between tabs with smooth transitions
 - **Enhanced Interactions**: Scale effects on star buttons with haptic feedback
 - **Polished Animations**: Smooth spring animations throughout the interface
 - Implemented light and dark mode support with system-aware color theming
@@ -112,7 +113,8 @@ The app follows the MVVM (Model-View-ViewModel) architecture:
 - **Mocking**: Protocol-based design enables easy testing with mock services
 - **Performance**: Optimized with computed properties and efficient state management
 - **Modern UI Enhancements**: Added contemporary design patterns and smooth interactions:
-  - Floating tab bar with frosted glass material effect
+  - Navigation title colors that adapt properly to light/dark mode
+  - Standard iOS tab bar with native design patterns
   - Swipe gesture navigation with animated tab switching
   - Enhanced button animations with scale effects and haptic feedback
   - Improved visual feedback throughout the interface
