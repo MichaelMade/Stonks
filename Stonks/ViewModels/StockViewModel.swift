@@ -153,15 +153,4 @@ class StockViewModel: ObservableObject {
     var isSortedAscending: Bool {
         favoriteSortAscending
     }
-    
-    // Keep this for backward compatibility during transition
-    func sortFavorites(byPriceChangeAscending ascending: Bool) -> [Stock] {
-        return favorites.sorted {
-            if ascending {
-                return $0.priceChange < $1.priceChange
-            } else {
-                return $0.priceChange > $1.priceChange
-            }
-        }
-    }
 }

@@ -132,7 +132,8 @@ struct StockViewModelTests {
         viewModel.toggleFavorite(for: viewModel.stocks[2]) // MSFT: +$5 (+1.69%)
         
         // When - Sort ascending
-        let ascendingResult = viewModel.sortFavorites(byPriceChangeAscending: true)
+        viewModel.setSortOrder(ascending: true)
+        let ascendingResult = viewModel.sortedFavorites
         
         // Then
         #expect(ascendingResult.count == 3, "Should have 3 sorted favorites")
@@ -140,7 +141,8 @@ struct StockViewModelTests {
         #expect(ascendingResult[1].id == "AAPL" || ascendingResult[1].id == "MSFT", "AAPL or MSFT should be next")
         
         // When - Sort descending
-        let descendingResult = viewModel.sortFavorites(byPriceChangeAscending: false)
+        viewModel.setSortOrder(ascending: false)
+        let descendingResult = viewModel.sortedFavorites
         
         // Then
         #expect(descendingResult.count == 3, "Should have 3 sorted favorites")

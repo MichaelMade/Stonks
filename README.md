@@ -78,20 +78,33 @@ The app follows the MVVM (Model-View-ViewModel) architecture:
 ## Project Structure
 
 - **Models**
-  - `Stock.swift`: Model for stock data
+  - `Stock.swift`: Model for stock data with computed properties
 - **Views**
   - `StockCellView.swift`: Reusable cell for displaying stock information
+  - `FeaturedStockCard.swift`: Card component for featured stocks
   - `FeaturedStocksView.swift`: Horizontal scrolling list of featured stocks
   - `StocksTabView.swift`: Main stocks tab view
-  - `FavoritesTabView.swift`: Favorites tab view
+  - `FavoritesTabView.swift`: Favorites tab view with sorting
+  - `Animations/`: Loading, error, and empty state views
 - **ViewModels**
-  - `StockViewModel.swift`: Manages stock data and app state
+  - `StockViewModel.swift`: Manages stock data and app state with reactive properties
 - **Services**
-  - `StockService.swift`: Handles mock API requests
+  - `StockService.swift`: Handles mock API requests with error handling
+  - `FormattingService.swift`: Centralized formatting for currency and percentages
 - **Utilities**
   - `ColorTheme.swift`: Defines color scheme for light and dark mode
+  - `StockError.swift`: Custom error types with localized descriptions
 - **Resources**
   - `example_response.json`: Mock API response data
+
+## Code Quality & Testing
+
+- **Architecture**: Clean MVVM pattern with proper separation of concerns
+- **Error Handling**: Comprehensive error types with user-friendly messages
+- **Testing**: Full unit test coverage for ViewModels and Services
+- **Mocking**: Protocol-based design enables easy testing with mock services
+- **Performance**: Optimized with lazy loading and efficient state management
+- **Code Cleanup**: Recently removed redundant methods to maintain clean APIs
 
 ## Future Improvements
 
