@@ -45,7 +45,7 @@ struct FavoritesTabView: View {
                                             Text(sortAscending ? "Ascending" : "Descending")
                                                 .font(.subheadline)
                                             
-                                            Image(systemName: sortAscending ? "arrow.up" : "arrow.down")
+                                            Image(systemName: "arrow.up")
                                                 .rotationEffect(.degrees(sortAscending ? 0 : 180))
                                         }
                                         .foregroundColor(ColorTheme.accent)
@@ -56,7 +56,7 @@ struct FavoritesTabView: View {
                                     }
                                     .accessibilityLabel("Sort by price change")
                                     .accessibilityValue(sortAscending ? "Ascending" : "Descending")
-                                    .accessibilityHint("Double tap to toggle sorting order")
+                                    .accessibilityHint("Tap to toggle sorting order")
                                 }
                                 .padding(.horizontal)
                                 
