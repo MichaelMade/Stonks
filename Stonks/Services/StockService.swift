@@ -16,9 +16,7 @@ class StockService: StockServiceProtocol {
     func fetchStocks() async throws -> [Stock] {
         // Simulate network delay
         do {
-            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
-        } catch is CancellationError {
-            throw CancellationError()
+            try await Task.sleep(for: .seconds(1)) // 1 second delay
         } catch {
             throw StockError.networkUnavailable
         }
