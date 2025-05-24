@@ -64,10 +64,6 @@ struct StocksTabView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }
-    
-    private func animationDelay(for index: Int) -> Double {
-        Double(index) * 0.05
-    }
 }
 
 #Preview {
