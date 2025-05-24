@@ -21,14 +21,9 @@ struct FeaturedStocksView: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 16) {
-                    ForEach(Array(stocks.enumerated()), id: \.element.id) { index, stock in
+                    ForEach(stocks, id: \.id) { stock in
                         FeaturedStockCard(stock: stock)
                         .frame(width: 200, height: 130)
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .trailing).combined(with: .opacity),
-                            removal: .move(edge: .leading).combined(with: .opacity)
-                        ))
-                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(Double(index) * 0.1), value: stocks)
                     }
                 }
                 .padding(.horizontal)
