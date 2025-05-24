@@ -79,10 +79,6 @@ class StockViewModel: ObservableObject {
         stocks.filter { favoriteStocks.contains($0.id) }
     }
     
-    var stocksWithIndices: [(Int, Stock)] {
-        Array(stocks.enumerated())
-    }
-    
     // MARK: - Sorting
     
     func setSortOrder(ascending: Bool) {

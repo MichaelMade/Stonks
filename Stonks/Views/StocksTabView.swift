@@ -43,13 +43,8 @@ struct StocksTabView: View {
                                 .accessibilityAddTraits(.isHeader)
                             
                             LazyVStack(spacing: 12) {
-                                ForEach(viewModel.stocksWithIndices, id: \.1.id) { index, stock in
+                                ForEach(viewModel.stocks, id: \.id) { stock in
                                     StockCellView(stock: stock)
-                                    .transition(.asymmetric(
-                                        insertion: .move(edge: .trailing).combined(with: .opacity),
-                                        removal: .move(edge: .leading).combined(with: .opacity)
-                                    ))
-                                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(animationDelay(for: index)), value: viewModel.stocks)
                                 }
                             }
                             .padding(.horizontal)
