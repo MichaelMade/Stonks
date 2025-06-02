@@ -12,7 +12,7 @@ struct FavoritesTabView: View {
     @State private var sortAscending = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 ColorTheme.background
                     .edgesIgnoringSafeArea(.all)
@@ -93,7 +93,6 @@ struct FavoritesTabView: View {
             // Support dynamic type
             .dynamicTypeSize(.xSmall ... .xxxLarge)
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

@@ -11,7 +11,7 @@ struct StocksTabView: View {
     @EnvironmentObject var viewModel: StockViewModel
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 ColorTheme.background
                     .edgesIgnoringSafeArea(.all)
@@ -62,7 +62,6 @@ struct StocksTabView: View {
                 }
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
