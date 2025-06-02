@@ -80,7 +80,7 @@ struct ErrorView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Error: \(message)")
         .accessibilityAddTraits(.isButton)
-        .accessibilityHint("Double tap to retry")
+        .accessibilityHint("Tap to retry")
     }
 }
 
